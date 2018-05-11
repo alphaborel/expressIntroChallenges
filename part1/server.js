@@ -1,10 +1,12 @@
 var express = require('express');
 var app = express();
 const fs = require('fs');
+var path = require('path');
 var port = process.env.PORT || 8000;
 
-app.get("/", function(req, res) {
-  let words = fs.readFileSync('index.html', 'utf8');
+
+app.get('/', function(req, res) {
+    res.sendFile(path.join(__dirname + '/index.html'));
 });
 
 //### Challenge 1:

@@ -11,16 +11,32 @@ app.get("/", function(req, res) {
 
 //### Challenge 1:
 app.post("/create/:name/:age", function(req, res) {
-  var usrInput = {
-    "name": `${req.params.name}`,
-    "age": `${req.params.age}`
+  let usrInput = {
+    "name": req.params.name,
+    "age": req.params.age
   }
-  var writeable = JSON.stringify(usrInput);
 
-  fs.appendFile('storage.json', writeable, (err) => {
-    if (err) throw err;
-    res.send('The "data to append" was appended to file!');
-  });
+  let readArr = fs.readFileSync("./storage.json", "utf8");
+  let newArr = JSON.parse(readArr);
+
+  newArr.push(usrInput);
+
+  fs.writeFileSync('./storage.json', JSON.stringify(newArr));
+
+  res.send('The user was appended to file!');
+});
+
+//### Challenge 3:
+app.get("/:name", function(req, res) {
+  var theRecord = fs.readFileSync("./storage.json", "UTF-8");
+  let outputUsr = JSON.parse(theRecord);
+  for (let i = 0; i < outputUsr.length; i++) {
+    if (outputUsr[i].name === req.params.name) {
+      res.json(outputUsr[i]);
+      return;
+    }
+  }
+  res.sendStatus(400);
 });
 
 app.use(function(req, res) {
